@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':masking-dialect-api')
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.testcontainers:postgresql'
+}

@@ -1,0 +1,46 @@
+profiles:
+  source:
+    url: jdbc:postgresql://localhost:5432/production
+    username: masking_reader
+    password: secret
+    dialect: postgres
+    schema: public
+
+  target:
+    url: jdbc:postgresql://localhost:5432/staging
+    username: masking_writer
+    password: secret
+    dialect: postgres
+    schema: public
+
+ruleset:
+  rules:
+    - table: customer
+      column: email
+      transformer: deterministicFakeEmail
+
+    - table: customer
+      column: phone
+      transformer: phoneMask
+
+    - table: customer
+      column: full_name
+      transformer: deterministicFakeFullName
+
+    - table: payment_card
+      column: pan
+      transformer: maskMiddle
+      params:
+        visibleLeft: 4
+        visibleRight: 4
+        maskChar: "*"
+
+    - table: orders
+      column: delivery_address
+      transformer: nullify
+
+  defaults:
+    - match: ".*email.*"
+      transformer: deterministicFakeEmail
+    - match: ".*phone.*"
+      transformer: phoneMask

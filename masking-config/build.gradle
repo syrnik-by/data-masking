@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':masking-core')
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}

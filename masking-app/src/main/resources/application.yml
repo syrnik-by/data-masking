@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: data-masking
+  datasource:
+    url: ${MASKING_AUDIT_DB_URL:jdbc:postgresql://localhost:5432/masking_audit}
+    username: ${MASKING_AUDIT_DB_USER:masking}
+    password: ${MASKING_AUDIT_DB_PASS:masking}
+  flyway:
+    locations: classpath:db/migration
+    schemas: masking_audit
+
+logging:
+  level:
+    ru.yourcompany.masking: DEBUG

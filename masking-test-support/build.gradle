@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':masking-engine')
+    implementation project(':masking-dialect-postgres')
+    implementation project(':masking-core')
+    implementation 'org.testcontainers:postgresql'
+    implementation 'org.testcontainers:junit-jupiter'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'org.postgresql:postgresql'
+}

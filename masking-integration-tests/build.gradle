@@ -1,0 +1,10 @@
+dependencies {
+    testImplementation project(':masking-test-support')
+    testImplementation project(':masking-engine')
+    testImplementation project(':masking-dialect-postgres')
+    testImplementation project(':masking-transformers')
+    testImplementation project(':masking-config')
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testRuntimeOnly 'org.postgresql:postgresql'
+}

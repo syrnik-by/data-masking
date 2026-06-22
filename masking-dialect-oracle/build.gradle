@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':masking-dialect-api')
+    // Oracle JDBC driver must be added manually due to licensing
+    // compileOnly files('libs/ojdbc11.jar')
+}

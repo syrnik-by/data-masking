@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':masking-api')
+    implementation project(':masking-core')
+    implementation project(':masking-config')
+    implementation project(':masking-transformers')
+    implementation project(':masking-dialect-api')
+    implementation 'org.slf4j:slf4j-api'
+}

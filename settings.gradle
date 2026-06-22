@@ -1,0 +1,19 @@
+rootProject.name = "data-masking"
+
+include(
+    "masking-common",
+    "masking-api",
+    "masking-core",
+    "masking-config",
+    "masking-transformers",
+    "masking-engine",
+    "masking-dialect-api",
+    "masking-dialect-postgres",
+    "masking-dialect-mssql",
+    "masking-dialect-oracle",
+    "masking-audit",
+    "masking-cli",
+    "masking-app",
+    "masking-test-support",
+    "masking-integration-tests"
+)

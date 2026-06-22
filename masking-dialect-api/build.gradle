@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(':masking-core')
+    implementation project(':masking-api')
+}

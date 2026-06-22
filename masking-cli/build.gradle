@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':masking-engine')
+    implementation project(':masking-config')
+    implementation project(':masking-dialect-postgres')
+    implementation project(':masking-dialect-mssql')
+    implementation project(':masking-dialect-oracle')
+    implementation project(':masking-audit')
+    implementation 'org.springframework.boot:spring-boot-starter'
+}
