@@ -1,11 +1,11 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version "${springBootVersion}" apply false
-    id 'io.spring.dependency-management' version '1.1.5' apply false
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
 }
 
 allprojects {
-    group = 'ru.yourcompany.masking'
+    group = 'ru.psb.masking'
     version = '0.1.0-SNAPSHOT'
 
     repositories {
@@ -30,7 +30,7 @@ subprojects {
         dependencies {
             dependency "org.jooq:jooq:${jooqVersion}"
             dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
-            dependency "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+            dependencySet(group: 'org.testcontainers', version: "${testcontainersVersion}") { entry 'testcontainers'; entry 'postgresql'; entry 'junit-jupiter' }
             dependency "org.flywaydb:flyway-core:${flywayVersion}"
             dependency "org.projectlombok:lombok:${lombokVersion}"
         }
