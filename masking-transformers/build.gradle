@@ -1,3 +1,5 @@
 dependencies {
-    implementation project(':masking-core')
+    // TransformContext and Transformer interface must be visible
+    // to masking-engine and integration tests
+    api project(':masking-core')
 }

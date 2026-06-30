@@ -1,4 +1,6 @@
 dependencies {
-    implementation project(':masking-core')
-    implementation project(':masking-api')
+    // SchemaModel / TableRef are return types of readSchema()
+    api project(':masking-core')
+    // ExecutionPlan and report types are part of the dialect contract
+    api project(':masking-api')
 }

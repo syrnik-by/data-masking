@@ -1,7 +1,8 @@
 dependencies {
-    implementation project(':masking-engine')
-    implementation project(':masking-dialect-postgres')
-    implementation project(':masking-core')
+    // engine and core types must be visible to IT modules that depend on test-support
+    api project(':masking-engine')
+    api project(':masking-dialect-postgres')
+    api project(':masking-core')
     implementation 'org.testcontainers:postgresql'
     implementation 'org.testcontainers:junit-jupiter'
     implementation 'org.springframework.boot:spring-boot-starter-test'

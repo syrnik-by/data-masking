@@ -1,3 +1,4 @@
 dependencies {
-    implementation project(':masking-common')
+    // MaskingException and other common types appear in masking-api public signatures
+    api project(':masking-common')
 }

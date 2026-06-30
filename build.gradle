@@ -13,8 +13,18 @@ allprojects {
     }
 }
 
+// Leaf (application) modules that should NOT expose api configuration
+def appModules = [':masking-app', ':masking-cli', ':masking-audit',
+                  ':masking-integration-tests', ':masking-test-support']
+
 subprojects {
-    apply plugin: 'java'
+    // Library modules get java-library so they can use 'api' configuration;
+    // application/leaf modules keep plain 'java'.
+    if (!(path in appModules)) {
+        apply plugin: 'java-library'
+    } else {
+        apply plugin: 'java'
+    }
     apply plugin: 'io.spring.dependency-management'
 
     java {
@@ -30,7 +40,11 @@ subprojects {
         dependencies {
             dependency "org.jooq:jooq:${jooqVersion}"
             dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
-            dependencySet(group: 'org.testcontainers', version: "${testcontainersVersion}") { entry 'testcontainers'; entry 'postgresql'; entry 'junit-jupiter' }
+            dependencySet(group: 'org.testcontainers', version: "${testcontainersVersion}") {
+                entry 'testcontainers'
+                entry 'postgresql'
+                entry 'junit-jupiter'
+            }
             dependency "org.flywaydb:flyway-core:${flywayVersion}"
             dependency "org.projectlombok:lombok:${lombokVersion}"
         }

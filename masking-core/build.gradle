@@ -1,3 +1,5 @@
 dependencies {
-    implementation project(':masking-api')
+    // SchemaModel, TableModel, ForeignKeyModel etc. are part of the public API
+    // consumed by masking-dialect-api, masking-engine and tests
+    api project(':masking-api')
 }

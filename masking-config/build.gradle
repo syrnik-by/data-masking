@@ -1,5 +1,7 @@
 dependencies {
-    implementation project(':masking-core')
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    // MaskingConfig exposes ConnectionProfile and rule types from masking-core
+    // downstream (masking-engine) needs them on compile classpath
+    api project(':masking-core')
+    api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+    api 'com.fasterxml.jackson.core:jackson-databind'
 }

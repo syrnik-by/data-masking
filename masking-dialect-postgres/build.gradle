@@ -1,5 +1,7 @@
 dependencies {
-    implementation project(':masking-dialect-api')
+    // PostgresDialect implements DatabaseDialect — dialect-api types
+    // must be visible to consumers (e.g. integration tests)
+    api project(':masking-dialect-api')
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.testcontainers:postgresql'
 }
