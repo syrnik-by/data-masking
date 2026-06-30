@@ -7,12 +7,15 @@ import ru.psb.masking.dialect.api.DatabaseDialect;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class PostgresDialect implements DatabaseDialect {
 
     @Override
     public String dialectName() { return "postgresql"; }
+
+    // ── readSchema ────────────────────────────────────────────────────────────
 
     @Override
     public SchemaModel readSchema(DataSource dataSource, String schema) {
@@ -74,14 +77,84 @@ public class PostgresDialect implements DatabaseDialect {
         return columns;
     }
 
+    // ── readTable ─────────────────────────────────────────────────────────────
+
     @Override
     public List<Map<String, Object>> readTable(DataSource dataSource, String schema, String table) {
-        throw new UnsupportedOperationException("TODO: implement PostgreSQL readTable");
+        String sql = "SELECT * FROM " + qi(schema) + "." + qi(table);
+        List<Map<String, Object>> rows = new ArrayList<>();
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            ResultSetMetaData meta = rs.getMetaData();
+            int colCount = meta.getColumnCount();
+
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                for (int i = 1; i <= colCount; i++) {
+                    row.put(meta.getColumnName(i), rs.getObject(i));
+                }
+                rows.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to read table " + schema + "." + table, e);
+        }
+
+        log.debug("Read {} rows from {}.{}", rows.size(), schema, table);
+        return rows;
     }
+
+    // ── writeBatch ────────────────────────────────────────────────────────────
 
     @Override
     public void writeBatch(DataSource dataSource, String schema, String table,
                            List<Map<String, Object>> rows) {
-        throw new UnsupportedOperationException("TODO: implement PostgreSQL writeBatch");
+        if (rows.isEmpty()) {
+            log.debug("writeBatch: no rows to write for {}.{}", schema, table);
+            return;
+        }
+
+        String qualified = qi(schema) + "." + qi(table);
+        List<String> columns = new ArrayList<>(rows.get(0).keySet());
+
+        String colList      = columns.stream().map(this::qi).collect(Collectors.joining(", "));
+        String placeholders = columns.stream().map(c -> "?").collect(Collectors.joining(", "));
+        String insertSql    = "INSERT INTO " + qualified + " (" + colList + ") VALUES (" + placeholders + ")";
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                // TRUNCATE the target table before inserting masked data
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("TRUNCATE TABLE " + qualified + " CASCADE");
+                }
+                // Batch INSERT
+                try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                    for (Map<String, Object> row : rows) {
+                        for (int i = 0; i < columns.size(); i++) {
+                            ps.setObject(i + 1, row.get(columns.get(i)));
+                        }
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+                conn.commit();
+                log.debug("Wrote {} rows to {}", rows.size(), qualified);
+            } catch (SQLException ex) {
+                conn.rollback();
+                throw ex;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to write batch to " + schema + "." + table, e);
+        }
+    }
+
+    // ── helpers ───────────────────────────────────────────────────────────────
+
+    /** Quotes a PostgreSQL identifier to handle reserved words and mixed case. */
+    private String qi(String name) {
+        return "\"" + name.replace("\"", "\"\"") + "\"";
     }
 }

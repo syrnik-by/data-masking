@@ -1,24 +1,32 @@
 package ru.psb.masking.transformers.registry;
 
+import ru.psb.masking.common.MaskingException;
 import ru.psb.masking.transformers.api.Transformer;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Central registry of all available {@link Transformer} implementations.
+ * Transformers are registered by name at application startup.
+ */
 public class TransformerRegistry {
 
-    private final Map<String, Transformer> transformers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Transformer> registry = new ConcurrentHashMap<>();
 
     public void register(Transformer transformer) {
-        transformers.put(transformer.name().toUpperCase(), transformer);
+        registry.put(transformer.name(), transformer);
     }
 
-    public Optional<Transformer> find(String name) {
-        return Optional.ofNullable(transformers.get(name.toUpperCase()));
+    public Transformer find(String name) {
+        Transformer t = registry.get(name);
+        if (t == null) {
+            throw new MaskingException("Unknown transformer: '" + name
+                    + "'. Registered transformers: " + registry.keySet());
+        }
+        return t;
     }
 
-    public Map<String, Transformer> all() {
-        return java.util.Collections.unmodifiableMap(transformers);
+    public boolean contains(String name) {
+        return registry.containsKey(name);
     }
 }

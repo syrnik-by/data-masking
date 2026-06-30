@@ -5,4 +5,5 @@ dependencies {
     implementation project(':masking-transformers')
     implementation project(':masking-dialect-api')
     implementation 'org.slf4j:slf4j-api'
+    implementation 'com.zaxxer:HikariCP'
 }
